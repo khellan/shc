@@ -148,8 +148,18 @@ case class HBaseRelation(
       val put = timestamp.fold(new Put(rBytes))(new Put(rBytes, _))
 
       colsIdxedFields.foreach { case (x, y) =>
-        val b = Utils.toBytes(row(x), y)
-        put.addColumn(Bytes.toBytes(y.cf), Bytes.toBytes(y.col), b)
+        try {
+          val b = Utils.toBytes(row(x), y)
+          put.addColumn(Bytes.toBytes(y.cf), Bytes.toBytes(y.col), b)
+        } catch {
+          case e: Exception => {
+            logInfo(s"Error for row: ${row.mkString}")
+            throw e
+          }
+         case _: Throwable => {
+              logInfo(s"Error for row: ${row.mkString}")
+            }
+        }
       }
       count += 1
       (new ImmutableBytesWritable, put)

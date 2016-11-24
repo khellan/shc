@@ -93,7 +93,7 @@ object Utils {
         case data: UTF8String => data.getBytes
         case data: String => Bytes.toBytes(data)
           //Bytes.toBytes(input.asInstanceOf[String])//input.asInstanceOf[UTF8String].getBytes
-        case _ => throw new Exception(s"unsupported data type ${field.dt}") //TODO
+        case _ => throw new Exception(s"unsupported data type ${field.dt}, input: ${input}, column: ${field.colName}") //TODO
       }
     }
   }
